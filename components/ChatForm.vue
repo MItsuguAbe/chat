@@ -9,7 +9,7 @@
 export default {
   methods: {
     login () {
-      window.alert('ログインしろよ')
+      window.alert('ログインしてください')
   }
  }
 }
