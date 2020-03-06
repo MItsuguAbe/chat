@@ -51,6 +51,12 @@ data () {
    firebase.auth().onAuthStateChanged((user) => {
      if (user) {
        this.setUser(user)
+       db.collection('profiles').doc(user.uid).set({
+         uid: user.uid,
+         displayName: user.displayName,
+         photoURL: user.photoURL
+       })
+
      }
    })
    db.collection('channels').get()
