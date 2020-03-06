@@ -2,9 +2,7 @@ export const strict = false
 
 
 export const state = () => ({
-    user: {
-        email: 'test@example.com'
-      }
+    user: null
 })
 
 export const getters = {

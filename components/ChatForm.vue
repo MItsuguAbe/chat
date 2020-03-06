@@ -1,6 +1,8 @@
 <template>
  <div class="input-container">
-   <textarea v-model="text" v-on:click="openLoginModal" v-on:keydown.enter="addMessage"></textarea>
+   <img v-if="isAuthenticated" :src="user.photoURL" class="avatar">
+   <textarea v-model="text" v-if="isAuthenticated" v-on:keydown.enter="addMessage"></textarea>
+   <textarea v-model="text" v-else v-on:click="openLoginModal"></textarea>
      <el-dialog
         title=""
         :visible.sync="dialogVisible"
@@ -29,6 +31,15 @@ export default {
         text: null
       }
     },
+  computed: {
+      user() {
+        return this.$store.state.user
+      },
+
+      isAuthenticated() {
+        return this.$store.getters.isAuthenticated
+      }
+    },
   methods: {
     ...mapActions(['setUser']),
     openLoginModal () {
@@ -37,8 +48,14 @@ export default {
     addMessage(event) {
       if (this.keyDownedForJPConversion(event)) { return }
       const channelId = this.$route.params.id
-      db.collection('channels').doc(channelId).collection('messages').add({ text: this.text, createdAt: new Date().getTime() })
-      .then(() => {
+      db.collection('channels').doc(channelId).collection('messages').add({ 
+        text: this.text, 
+        createdAt: new Date().getTime(),
+        user: {
+         name: this.user.displayName,
+         thumbnail: this.user.photoURL
+       }
+        }).then(() => {
          this.text = null
        })
    },
@@ -66,6 +83,12 @@ export default {
 .input-container {
  padding: 10px;
  height: 100%;
+ display: flex;
+}
+
+.avatar {
+ height: 100%;
+ width: auto;
 }
 
 textarea {
